@@ -19,7 +19,7 @@ pool.handleSync(function (params) {
 ```sh
 // main.js
 var pool = require('@davvo/worker-pool')({
-  worker: __dirname + '/adder.js'
+  worker: 'adder.js'
 });
 
 pool.doWork({a: 28, b: 14}).then(function (sum) {
