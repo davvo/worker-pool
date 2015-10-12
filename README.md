@@ -22,7 +22,7 @@ var pool = require('@davvo/worker-pool')({
   worker: __dirname + '/adder.js'
 });
 
-pool.doWork({a: 28, b: 24}).then(function (sum) {
+pool.doWork({a: 28, b: 14}).then(function (sum) {
   console.log("The answer is", sum);
 });
 ```
