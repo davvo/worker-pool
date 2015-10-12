@@ -46,6 +46,15 @@ function pool(options) {
 				id: id,
 				params: params
 			});
+		},
+
+		destroy: function () {
+			workers.forEach(function (worker) {
+				worker.kill();
+			});
+			Object.keys(timeouts).forEach(function (id) {
+				clearTimeout(timeouts[id]);
+			});
 		}
 	};
 }
@@ -64,7 +73,7 @@ pool.handle = function (fn) {
 		fn(msg.params, function (err, result) {
 			process.send({
 				id: msg.id,
-				error: err.message || err,
+				error: err,
 				result: result
 			});
 		});
