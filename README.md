@@ -8,7 +8,7 @@ Distribute work in node.js
 
 ## Example
 ```sh
-// worker.js
+// adder.js
 var pool = require('@davvo/worker-pool');
 
 pool.handleSync(function (params) { 
@@ -18,7 +18,9 @@ pool.handleSync(function (params) {
 
 ```sh
 // main.js
-var pool = require('@davvo/worker-pool');
+var pool = require('@davvo/worker-pool')({
+  worker: __dirname + '/adder.js'
+});
 
 pool.doWork({a: 28, b: 24}).then(function (sum) {
   console.log("The answer is", sum);
