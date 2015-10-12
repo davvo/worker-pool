@@ -13,9 +13,8 @@ test('adder-sync', function (t) {
 
 	pool.doWork({
 		numbers: [1, 2, 3, 4, 5]
-	}, function (err, sum) {
+	}).then(function (sum) {
 		pool.destroy();
-		t.error(err);
 		t.equal(15, sum);
 		t.end();
 	});
@@ -28,44 +27,24 @@ test('adder', function (t) {
 
 	pool.doWork({
 		numbers: [-2, -1, 0, 1, 2]
-	}, function (err, sum) {
-		pool.destroy();
-		t.error(err);
-		t.equal(0, sum);
-		t.end();
-	});
-});
-
-test('promise', function (t) {
-	var pool = require('..')({
-		worker: __dirname + '/adder.js'
-	});
-
-	pool.promise({
-		numbers: [-2, -1, 0, 1, 2]
 	}).then(function (sum) {
-		t.equal(0, sum);
-	}, function (err) {
-		t.fail();
-	}).done(function () {
 		pool.destroy();
+		t.equal(0, sum);
 		t.end();
 	});
 });
 
-test('promise-fail', function (t) {
+
+test('adder-fail', function (t) {
 	var pool = require('..')({
 		worker: __dirname + '/adder.js'
 	});
 
-	pool.promise({
+	pool.doWork({
 		foo: 'bar'
-	}).then(function (sum) {
-		t.fail();
-	}, function (err) {
-		t.ok(err);
-	}).done(function () {
+	}).then(null, function (err) {
 		pool.destroy();
+		t.ok(err);
 		t.end();
 	});
 });

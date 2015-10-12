@@ -49,9 +49,7 @@ function pool(options) {
 	}
 
 	return {
-		doWork: doWork,
-
-		promise: Promise.denodeify(doWork),
+		doWork: Promise.denodeify(doWork),
 
 		destroy: function () {
 			workers.forEach(function (worker) {
