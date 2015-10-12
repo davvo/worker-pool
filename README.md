@@ -34,7 +34,7 @@ pool.handle(function (params, callback) {
 
 ## Pool options
 ```sh
-var pool = require('worker-pool')({
+var pool = require('@davvo/worker-pool')({
   worker: __dirname + '/my-worker.js',
   numWorkers: 2
   timeout: 5000
