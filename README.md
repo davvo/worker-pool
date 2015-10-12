@@ -27,10 +27,17 @@ pool.doWork({a: 28, b: 24}).then(function (sum) {
 
 ## Async workers
 ```sh
-// worker.js
-var pool = require('worker-pool');
-
 pool.handle(function (params, callback) {
   callback(null, params.a + param.b);
+});
+```
+
+## Pool options
+```sh
+// main.js
+var pool = require('worker-pool')({
+  worker: __dirname + '/my-worker.js',
+  numWorkers: 2
+  timeout: 5000
 });
 ```
