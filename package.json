@@ -8,6 +8,10 @@
   },
   "author": "David Ershag",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davvo/worker-pool.git"
+  },
   "dependencies": {
     "object-assign": "^4.0.1",
     "promise": "^7.0.4"
