@@ -12,7 +12,7 @@ Distribute work in node.js
 var pool = require('@davvo/worker-pool');
 
 pool.handleSync(function (params) { 
-  return params.a + param.b;
+  return params.a + params.b;
 });
 ```
 
