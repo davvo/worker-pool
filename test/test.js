@@ -36,9 +36,41 @@ test('adder', function (t) {
 	});
 });
 
-test('end', function (t) {
-	setTimeout(function () {
+test('promise', function (t) {
+	var pool = require('..')({
+		worker: __dirname + '/adder.js'
+	});
+
+	pool.promise({
+		numbers: [-2, -1, 0, 1, 2]
+	}).then(function (sum) {
+		t.equal(0, sum);
+	}, function (err) {
+		t.fail();
+	}).done(function () {
+		pool.destroy();
 		t.end();
-		process.exit(0);
-	}, 1000);
+	});
+});
+
+test('promise-fail', function (t) {
+	var pool = require('..')({
+		worker: __dirname + '/adder.js'
+	});
+
+	pool.promise({
+		foo: 'bar'
+	}).then(function (sum) {
+		t.fail();
+	}, function (err) {
+		t.ok(err);
+	}).done(function () {
+		pool.destroy();
+		t.end();
+	});
+});
+
+test('end', function (t) {
+	t.end();
+	process.exit(0);
 });	

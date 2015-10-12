@@ -2,7 +2,8 @@
 
 var os = require('os'),
 	cp = require('child_process'),
-	assign = require('object-assign');
+	assign = require('object-assign'),
+	Promise = require('promise');
 
 function pool(options) {
 
@@ -32,21 +33,25 @@ function pool(options) {
 		});
 	}
 
+	function doWork(params, callback) {
+		var id = msgID++;
+		callbacks[id] = callback;
+		timeouts[id] = setTimeout(function () {
+			delete callbacks[id];
+			delete timeouts[id];
+			callback(new Error("Timeout"));
+		}, options.timeout);
+		index = (index >= workers.length - 1) ? 0 : index + 1;		
+		workers[index].send({
+			id: id,
+			params: params
+		});
+	}
+
 	return {
-		doWork: function (params, callback) {
-			var id = msgID++;
-			callbacks[id] = callback;
-			timeouts[id] = setTimeout(function () {
-				delete callbacks[id];
-				delete timeouts[id];
-				callback(new Error("Timeout"));
-			}, options.timeout);
-			index = (index >= workers.length - 1) ? 0 : index + 1;
-			workers[index].send({
-				id: id,
-				params: params
-			});
-		},
+		doWork: doWork,
+
+		promise: Promise.denodeify(doWork),
 
 		destroy: function () {
 			workers.forEach(function (worker) {
