@@ -34,7 +34,6 @@ pool.handle(function (params, callback) {
 
 ## Pool options
 ```sh
-// main.js
 var pool = require('worker-pool')({
   worker: __dirname + '/my-worker.js',
   numWorkers: 2
