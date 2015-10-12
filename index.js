@@ -9,7 +9,7 @@ function pool(options) {
 
 	var workers = [];
 	var index = 0;
-	var msgID = 0;
+	var nextId = 0;
 
 	var timeouts = {};
 	var callbacks = {};
@@ -34,14 +34,17 @@ function pool(options) {
 	}
 
 	function doWork(params, callback) {
-		var id = msgID++;
+		var id = nextId++;
 		callbacks[id] = callback;
 		timeouts[id] = setTimeout(function () {
 			delete callbacks[id];
 			delete timeouts[id];
 			callback(new Error("Timeout"));
 		}, options.timeout);
-		index = (index >= workers.length - 1) ? 0 : index + 1;		
+		index = index + 1;
+		if (index >= workers.length) {
+			index = 0;
+		}
 		workers[index].send({
 			id: id,
 			params: params
