@@ -50,16 +50,20 @@ test('adder-fail', function (t) {
 });
 
 test('blocker', function (t) {
+	var numWorkers = require('os').cpus().length;
+
 	var pool = require('..')({
-		worker: __dirname + '/blocker.js'
+		worker: __dirname + '/blocker.js',
+		numWorkers: numWorkers
 	});
 
 	var work = [];
-	var cpus = require('os').cpus().length;
 	var start = new Date();
 
-	while (work.length < cpus) {
-		work.push(pool.doWork({}));
+	while (work.length < numWorkers) {
+		work.push(pool.doWork({
+			time: 500
+		}));
 	}
 
 	Promise.all(work).then(function () {
