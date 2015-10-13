@@ -1,9 +1,14 @@
 'use strict';
 
 var os = require('os'),
-	cp = require('child_process'),
-	assign = require('object-assign'),
-	Promise = require('promise');
+	cp = require('child_process');
+
+function extend(dst, src) {
+	Object.keys(src).forEach(function (key) {
+		dst[key] = src[key];
+	});
+	return dst;
+}
 
 function pool(options) {
 
@@ -14,7 +19,7 @@ function pool(options) {
 	var timeouts = {};
 	var callbacks = {};
 
-	options = assign({
+	options = extend({
 		numWorkers: os.cpus().length,
 		worker: __dirname + '/worker.js',
 		timeout: 3000
@@ -52,7 +57,17 @@ function pool(options) {
 	}
 
 	return {
-		doWork: Promise.denodeify(doWork),
+		doWork: function (params) {
+			return new Promise(function (resolve, reject) {
+				doWork(params, function (err, res) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(res);
+					}
+				});
+			})
+		},
 
 		destroy: function () {
 			workers.forEach(function (worker) {
