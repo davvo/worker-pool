@@ -49,6 +49,27 @@ test('adder-fail', function (t) {
 	});
 });
 
+test('blocker', function (t) {
+	var pool = require('..')({
+		worker: __dirname + '/blocker.js'
+	});
+
+	var work = [];
+	var cpus = require('os').cpus().length;
+	var start = new Date();
+
+	while (work.length < cpus) {
+		work.push(pool.doWork({}));
+	}
+
+	Promise.all(work).then(function () {
+		var time = new Date() - start;
+		t.ok(time < 1000);
+		t.end();
+	});
+
+});
+
 test('end', function (t) {
 	t.end();
 	process.exit(0);
